@@ -11,8 +11,10 @@ var Enemy = function() {
     this.x = -101;
     this.y = 135 + i * 83;
 
-    //Setting the enemy speed based on allEnemies loop order
-    this.speed = 200-50*i;
+    //Setting the enemy speed as maximum of 300 but
+    // reduced by increments of 2 based on random number/random floor selection
+    //between 0 - 99
+    this.speed = 300 - 2*(Math.floor(Math.random() *100));
 
 };
 
@@ -28,6 +30,7 @@ Enemy.prototype.update = function(dt) {
     this.x = this.x + this.speed * dt;
     if (this.x > 505) {
         this.x = -101;
+        this.speed = 300 - 2*(Math.floor(Math.random() *100));
     }
     //Collision checker
     //First condition checks to see if the enemey and the player are on the same row
@@ -98,6 +101,8 @@ Player.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 };
 
+
+
 //Setting up handleInput method with block wide values to add to x and y for
 // the player movement
 Player.prototype.handleInput = function(input) {
@@ -112,6 +117,39 @@ Player.prototype.handleInput = function(input) {
         adjustY = 83;
     }
 };
+
+//writing the Gem class, loading the image, calculating for the gem to appear randomly
+//on screen in the stones only, and finaly setting up a timer that "update" will use
+var Gem = function () {
+    this.sprite = 'images/Gem Orange.png';
+    this.x = 18 + (101* Math.floor(Math.random()* 5));
+    this.y = 135 + (83 * Math.floor(Math.random() *3));
+    this.timer = Date.now();
+}
+
+Gem.prototype.render = function() {
+    ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+};
+
+Gem.prototype.update = function() {
+    //Checks for player reaching gem; awards "life" & takes gem offscreen
+    if (this.x === player.x && this.y === player.y) {
+        player.livesRemaining = player.livesRemaining + 1;
+        this.x = -70;
+        this.timer = Date.now();
+    }
+    //Takes gem off screen if on screen after 4 secs
+    if (this.x > -70 && (Date.now() - gem.timer)/1000 > 4) {
+        this.x = -70;
+        this.timer = Date.now();
+    }
+    //if gem offscreen 8 secs, puts back on screen
+    if (this.x === -70 && ((Date.now() - gem.timer)/1000 > 8)  ) {
+        this.x = 18 + (101* Math.floor(Math.random()* 5));
+        this.y = 135 + (83 * Math.floor(Math.random() *3));
+        this.timer = Date.now();
+    }
+}
 
 //Creating a reset function for the player start position
 var reset = function () {
@@ -136,6 +174,7 @@ for (i = 0; i < enemyNumber; i++) {
 var adjustX = 0;
 var adjustY = 0;
 var player = new Player();
+var gem = new Gem();
 
 
 
