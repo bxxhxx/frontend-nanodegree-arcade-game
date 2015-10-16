@@ -23,11 +23,18 @@ var Engine = (function(global) {
         win = global.window,
         canvas = doc.createElement('canvas'),
         ctx = canvas.getContext('2d'),
-        lastTime;
+        lastTime,
+        //Create two paragraphs for two elements: scores and lives
+        score = doc.createElement('p'),
+        lives = doc.createElement('p');
+
 
     canvas.width = 505;
     canvas.height = 606;
+    //Appending my two new elements to the DOM
+    doc.body.appendChild(score);
     doc.body.appendChild(canvas);
+    doc.body.appendChild(lives);
 
     /* This function serves as the kickoff point for the game loop itself
      * and handles properly calling the update and render methods.
@@ -66,6 +73,8 @@ var Engine = (function(global) {
     function init() {
         reset();
         lastTime = Date.now();
+
+        //lives.textContent = 'Lives Remaining: ' + player.livesRemaining;
         main();
     }
 
@@ -81,6 +90,17 @@ var Engine = (function(global) {
     function update(dt) {
         updateEntities(dt);
         // checkCollisions();
+        //Puts the score in score element
+        score.textContent = 'score: ' + player.score;
+        //Creating condition for lives to show "game over" once the lives remaining
+        //reaches the value of 0
+        if (player.livesRemaining === 0) {
+            lives.textContent = 'GAME OVER!';
+        } else {
+            lives.textContent = 'Lives Remaining: ' + player.livesRemaining;
+        }
+
+
     }
 
     /* This is called by the update function  and loops through all of the
