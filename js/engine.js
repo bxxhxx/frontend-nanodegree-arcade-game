@@ -31,7 +31,7 @@ var Engine = (function(global) {
 
     canvas.width = 505;
     canvas.height = 606;
-    //Appending my two new elements to the DOM
+    //Appending score and lives elements to the DOM along with the canvas
     doc.body.appendChild(score);
     doc.body.lastChild.setAttribute('id', 'score');
     doc.body.appendChild(canvas);
@@ -75,8 +75,6 @@ var Engine = (function(global) {
     function init() {
         reset();
         lastTime = Date.now();
-
-        //lives.textContent = 'Lives Remaining: ' + player.livesRemaining;
         main();
     }
 
@@ -91,19 +89,17 @@ var Engine = (function(global) {
      */
     function update(dt) {
         updateEntities(dt);
-        // checkCollisions();
+        // checkCollisions(); Commented out! collision detection in app.js
         //Puts the score in score element
         score.textContent = 'score: ' + player.score;
-        //Creating condition for lives to show "game over" once the lives remaining
-        //reaches the value of 0
+        /*Creates condition for lives to show "game over" once the lives remaining
+        reaches the value of 0 */
         if (player.livesRemaining === 0) {
             lives.textContent = 'GAME OVER!';
         } else {
             lives.textContent = 'Lives Remaining: ' + player.livesRemaining;
         }
-
-
-    }
+    };
 
     /* This is called by the update function  and loops through all of the
      * objects within your allEnemies array as defined in app.js and calls
@@ -117,6 +113,7 @@ var Engine = (function(global) {
             enemy.update(dt);
         });
         player.update();
+        //Runs the gem update
         gem.update();
     }
 
@@ -176,6 +173,7 @@ var Engine = (function(global) {
         });
 
         player.render();
+        //Runs the gem render
         gem.render();
     }
 
